@@ -242,7 +242,31 @@ public class SwiftTwilioVoicePlugin: NSObject, FlutterPlugin,  FlutterStreamHand
             eventSink(!isOnHold ? "Hold" : "Unhold")
         }
         else if flutterCall.method == "answer" {
-            // nuthin
+            
+            
+            if (self.callInvite != nil) {
+//                self.performAnswerVoiceCall(uuid: self.callInvite!.uuid) { (success) in
+//                    if success {
+//                        self.sendPhoneCallEvents(description: "LOG|provider:performAnswerVoiceCall() successful", isError: false)
+//                    } else {
+//                        self.sendPhoneCallEvents(description: "LOG|provider:performAnswerVoiceCall() failed:", isError: false)
+//                    }
+//                }
+                
+                let answerAction: CXAnswerCallAction = CXAnswerCallAction(call: self.callInvite!.uuid)
+                let transaction: CXTransaction = CXTransaction(action: answerAction)
+                
+                callKitCallController.request(transaction) { error in
+                    if let error = error {
+                        NSLog("Error!!!")
+                    } else {
+                        NSLog("Success")
+                    }
+                }
+            }
+            
+//            self.sendPhoneCallEvents(description: "LOG|provider:performAnswerCallAction:", isError: false)
+            
         }
         else if flutterCall.method == "unregister" {
             guard let deviceToken = deviceToken else {
@@ -261,6 +285,13 @@ public class SwiftTwilioVoicePlugin: NSObject, FlutterPlugin,  FlutterStreamHand
                 self.userInitiatedDisconnect = true
                 performEndCallAction(uuid: self.call!.uuid!)
                 //self.toggleUIState(isEnabled: false, showCallControl: false)
+            } else if (self.callInvite != nil) {
+                self.sendPhoneCallEvents(description: "LOG|provider:performEndCallAction: rejecting call", isError: false)
+                self.userInitiatedDisconnect = true
+                performEndCallAction(uuid: self.callInvite!.uuid)
+                
+                self.callInvite?.reject()
+                self.callInvite = nil
             }
         }else if flutterCall.method == "registerClient"{
             guard let clientId = arguments["id"] as? String, let clientName =  arguments["name"] as? String else {return}

@@ -273,17 +273,17 @@ class TVConnectionService : ConnectionService() {
                     }
 
                     // Get telecom manager
-                    if (!telecomManager.hasCallCapableAccount(applicationContext, phoneAccountHandle.componentName.className)) {
-                        Log.e(
-                            TAG, "onCallInvite: No registered phone account for PhoneHandle $phoneAccountHandle.\n" +
-                                    "Check the following:\n" +
-                                    "- Have you requested READ_PHONE_STATE permissions\n" +
-                                    "- Have you registered a PhoneAccount \n" +
-                                    "- Have you activated the Calling Account?"
-                        )
-                        callInvite.reject(applicationContext)
-                        return@let
-                    }
+                //    if (!telecomManager.hasCallCapableAccount(applicationContext, phoneAccountHandle.componentName.className)) {
+                //        Log.e(
+                //            TAG, "onCallInvite: No registered phone account for PhoneHandle $phoneAccountHandle.\n" +
+                //                    "Check the following:\n" +
+                //                    "- Have you requested READ_PHONE_STATE permissions\n" +
+                //                    "- Have you registered a PhoneAccount \n" +
+                //                    "- Have you activated the Calling Account?"
+                //        )
+                //        callInvite.reject(applicationContext)
+                //        return@let
+                //    }
 
                     val myBundle: Bundle = Bundle().apply {
                         putParcelable(EXTRA_INCOMING_CALL_INVITE, callInvite)
@@ -389,10 +389,10 @@ class TVConnectionService : ConnectionService() {
                         return@let
                     }
 
-                    if (!telecomManager.hasCallCapableAccount(applicationContext, phoneAccountHandle.componentName.className)) {
-                        Log.e(TAG, "onStartCommand: No registered phone account for PhoneHandle $phoneAccountHandle")
-                        telecomManager.registerPhoneAccount(applicationContext, phoneAccountHandle)
-                    }
+                    // if (!telecomManager.hasCallCapableAccount(applicationContext, phoneAccountHandle.componentName.className)) {
+                    //     Log.e(TAG, "onStartCommand: No registered phone account for PhoneHandle $phoneAccountHandle")
+                    //     telecomManager.registerPhoneAccount(applicationContext, phoneAccountHandle)
+                    // }
 
                     if (!applicationContext.hasCallPhonePermission()) {
                         Log.e(TAG, "onStartCommand: Missing CALL_PHONE permission, request permission with `requestCallPhonePermission()`")
